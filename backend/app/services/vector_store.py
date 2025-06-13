@@ -18,7 +18,7 @@ pc = Pinecone(api_key=pinecone_api_key)
 if index_name not in pc.list_indexes().names():
     pc.create_index(
         name=index_name,
-        dimension=1536,  # for text-embedding-ada-002
+        dimension=1536,
         metric='cosine',
         spec=ServerlessSpec(
             cloud=pinecone_cloud,
@@ -34,9 +34,12 @@ def get_vector_store():
 
 
 # Add text to vector store
-def add_to_vector_store(text, doc_id):
+def add_to_vector_store(text, doc_id, session_id):
     splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=100)
-    docs = splitter.create_documents([text], metadatas=[{"doc_id": doc_id}])
+    docs = splitter.create_documents(
+        [text],
+        metadatas=[{"doc_id": doc_id, "session_id": session_id}]
+    )
     
     vectorstore = get_vector_store()
     vectorstore.add_documents(docs)

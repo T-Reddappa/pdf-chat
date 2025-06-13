@@ -1,33 +1,28 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
+from ..services.vector_store import get_vector_store
 from langchain.chains.question_answering import load_qa_chain
 from langchain_openai import ChatOpenAI
-from app.services.vector_store import get_relevant_docs
 
 router = APIRouter()
 
-class QuestionRequest(BaseModel):
+class AskRequest(BaseModel):
     question: str
+    doc_id: str
 
 @router.post("/")
-async def ask_question(payload: QuestionRequest):
-    try:
-        docs = get_relevant_docs(payload.question)
-        print(f'===============:{docs}')
+async def ask_question(req: AskRequest, x_session_id: str = Header(...)):
+    vectorstore = get_vector_store()
 
-        if not docs:
-            raise HTTPException(status_code=404, detail="No relevant documents found.")
+    retriever = vectorstore.as_retriever(
+        search_kwargs={"filter": {"doc_id": req.doc_id, "session_id": x_session_id}}
+    )
 
-        # Load LLM
-        llm = ChatOpenAI(model="gpt-4-turbo", temperature=0)
+    docs = retriever.get_relevant_documents(req.question)
+    if not docs:
+        raise HTTPException(status_code=404, detail="No documents found for this session.")
 
-        # Load QA Chain
-        chain = load_qa_chain(llm, chain_type="stuff")
+    chain = load_qa_chain(ChatOpenAI(), chain_type="stuff")
+    answer = chain.run(input_documents=docs, question=req.question)
 
-        # Run chain
-        answer = chain.run(input_documents=docs, question=payload.question)
-
-        return {"question": payload.question, "answer": answer}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    return {"answer": answer}

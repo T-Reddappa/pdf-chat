@@ -22,9 +22,9 @@ create_tables()
 def read_root():
     return {"message": "PDF Chat Backend is Running!"}
 
-@app.get('/hello')
-async def root():
-    return {"message":"Hello Word@@@@"}
+# @app.get('/hello')
+# async def root():
+#     return {"message":"Hello Word@@@@"}
 
 app.add_middleware(
     CORSMiddleware,
