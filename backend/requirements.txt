@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+boto3
+python-multipart
+PyMuPDF
+SQLAlchemy
+psycopg2-binary
+langchain
+openai
+langchain-openai
+pinecone
+python-dotenv
