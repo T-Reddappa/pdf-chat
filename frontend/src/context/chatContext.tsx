@@ -7,7 +7,7 @@ interface Message {
 
 interface ChatContextType {
   messages: Message[];
-  addMessage: (msg: Message) => void;
+  addMessage: (msg: Message | ((prev: Message[]) => Message[])) => void;
   docId: string | null;
   setDocId: (id: string) => void;
   filename: string | null;

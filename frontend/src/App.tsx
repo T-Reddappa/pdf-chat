@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import AiChat from "./pages/Chat";
 import { Toaster } from "react-hot-toast";
+
+import Home from "./pages/Home";
 import Chat from "./pages/Chat";
 
 const App = () => {
