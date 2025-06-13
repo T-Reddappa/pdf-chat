@@ -7,6 +7,7 @@ SQLAlchemy
 psycopg2-binary
 langchain
 openai
+langchain_pinecone
 langchain-openai
 pinecone
 python-dotenv
