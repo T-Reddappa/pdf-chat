@@ -14,7 +14,7 @@ A modern web application that allows users to chat with their PDF documents usin
 
 ### Frontend
 
-- React 19
+- React
 - TypeScript
 - Vite
 - Tailwind CSS
